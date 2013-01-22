@@ -29,6 +29,9 @@ def url(url_rule, import_name, **options):
     We further optimize this in terms of amount of keystrokes needed to write Lazy views loading by having a function
     that calls into add_url_rule() by prefixing a string with the project name and a dot, and by wrapping view_func in
     a LazyView as needed.
+
+    One thing to keep in mind is that before and after request handlers have to be in a file that is imported upfront
+     to work properly on the first request. The same goes for any kind of remaining decorator.
     """
     view = LazyView('app.' + import_name)
     app.add_url_rule(url_rule, view_func=view, **options)
