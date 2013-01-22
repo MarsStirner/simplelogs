@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from app import db
 
 class LogEntry:
     """Main class for new log entries.

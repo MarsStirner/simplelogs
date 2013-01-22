@@ -3,6 +3,7 @@
 from werkzeug import import_string, cached_property
 
 from app import app
+import yaml
 
 class LazyView(object):
     """Lazily Loading Views
@@ -23,6 +24,13 @@ class LazyView(object):
 
     def __call__(self, *args, **kwargs):
         return self.view(*args, **kwargs)
+
+#TODO Write this class!
+class Config:
+    #TODO Add try-except block.
+    @staticmethod
+    def mongo():
+        return yaml.load(open('app/config.yaml', 'r'))['mongo']
 
 def url(url_rule, import_name, **options):
     """
