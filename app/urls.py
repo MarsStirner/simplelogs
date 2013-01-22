@@ -1,4 +1,3 @@
-from app import app
-import views
+from helpers import url
 
-app.add_url_rule('/', view_func=views.index)
+url('/user/<username>', 'views.index', methods=["GET",])
