@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from werkzeug import import_string, cached_property
+import yaml
 
 from app import app
-import yaml
 
 class LazyView(object):
     """Lazily Loading Views
@@ -25,13 +25,6 @@ class LazyView(object):
     def __call__(self, *args, **kwargs):
         return self.view(*args, **kwargs)
 
-#TODO Write this class!
-class Config:
-    #TODO Add try-except block.
-    @staticmethod
-    def mongo():
-        return yaml.load(open('app/config.yaml', 'r'))['mongo']
-
 def url(url_rule, import_name, **options):
     """
     We further optimize this in terms of amount of keystrokes needed to write Lazy views loading by having a function
@@ -43,3 +36,9 @@ def url(url_rule, import_name, **options):
     """
     view = LazyView('app.' + import_name)
     app.add_url_rule(url_rule, view_func=view, **options)
+
+def config():
+    #TODO Add validators for parameters.
+    f = open('app/config.yaml', 'r')
+    config = yaml.load(f)
+    return config

@@ -1,14 +1,11 @@
 from pymongo import MongoClient
+from helpers import config
 
-#TODO Not a very beautiful connector. Rewrite/refactor it.
+config = config()
+
 class MongoDBConnection:
-    def __init__(self, host, port, user = None, password = None):
-        self.host = host
-        self.port = port
-        self.user = user
-        self.password = password
-
-    def connect(self):
+    @staticmethod
+    def connect():
         """
         tz_aware - if True, datetime instances returned as values in a document by this MongoClient will
         be timezone aware (otherwise they will be naive).
@@ -20,13 +17,13 @@ class MongoDBConnection:
         j: If True block until write operations have been committed to the journal. Ignored if the server
         is running without journaling.
         """
-        return MongoClient(self.host, self.port, tz_aware = True, w = 1, j = True)
+        host = config['mongo']['host']
+        port = config['mongo']['port']
+        user = config['mongo']['user']
+        password = config['mongo']['password']
+        database = config['mongo']['database']
+        collection = config['mongo']['collection']
 
-#TODO Add validator for config-file.
-def config():
-    pass
-
-#TODO add configuration as a db() func parameter.
-def connect():
-    connection = MongoDBConnection(config['host'], config['port']).connect()
-    return connection[config['database']]
+        #TODO add authorization mechanism for MongoDB
+        connection = MongoClient(host, port, tz_aware = True, w = 1, j = True)
+        return connection[database]
