@@ -5,3 +5,11 @@ mongo:
   password: root
   database: simplelogs
   collection: entries
+
+level:
+  - critical
+  - error
+  - warning
+  - notice
+  - info
+  - debug

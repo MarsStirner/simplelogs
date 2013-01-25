@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
-from app import db
+
+from datetime import datetime
+from pymongo.errors import AutoReconnect
+
+from connectors import MongoDBConnection
+db = MongoDBConnection.connect()
+from helpers import config
+
+config = config()
+collection = config['mongo']['collection']
 
 class LogEntry:
     """Main class for new log entries.
@@ -18,7 +27,7 @@ class LogEntry:
     tags - tags list for extended search
 
     """
-    def __init__(self, level, datetimestamp, owner, data, tags=[]):
+    def __init__(self, level='info', datetimestamp=datetime.now(), owner='', data='', tags=[]):
         self.level = level
         self.datetimestamp = datetimestamp
         self.owner = owner
@@ -26,4 +35,14 @@ class LogEntry:
         self.tags = tags
 
     def save(self):
-        pass
+        try:
+            entry_id = db[collection].insert({
+                'level': self.level,
+                'datetimestamp': self.datetimestamp,
+                'owner': self.owner,
+                'data': self.data,
+                'tags': self.tags
+            })
+            return entry_id
+        except AutoReconnect, e:
+            return e.message
