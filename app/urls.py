@@ -1,4 +1,4 @@
-from app import app
-import views
+from helpers import url
 
-app.add_url_rule('/', view_func=views.index)
+url('/', 'views.index', methods=["GET",])
+url('/api/entry/', 'views.new_entry', methods=["POST",])
