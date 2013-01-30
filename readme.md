@@ -1,4 +1,4 @@
-Version: __0.1__
+Version: __0.1.1__
 
 About
 =====
@@ -6,7 +6,7 @@ Simplelogs is [RESTful] [rest] API logging system written in Python. It based on
 
 For start Simplelogs use:
 
-    python run.py
+    python app.py
 
 For test sending log message you can use, for example, [curl]:
 
@@ -44,6 +44,8 @@ _Level_ section describes logenty levels. By default it includes:
   * Notice – for non-error messages you usually want to see
   * Info – for messages you usually don’t want to see
   * Debug – for debug messages
+  
+You can add, remove or modify any of level you want. You don't need to restart server after it. 
 
 Log entry description
 =====================
@@ -51,7 +53,7 @@ Log-entry is a collection of 3 required and 2 non-required entries:
 
   * level (Required) - only text. Shoud be specified in app/config.yaml
   * datetimestamp - current datetime stamp. You don't need to send it. Server will do it automaticly.
-  * owner = (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
+  * owner (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
   * data (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
   * tags - list (array) only.
 
