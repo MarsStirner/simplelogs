@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 from werkzeug import import_string, cached_property
 import yaml
 
@@ -39,6 +41,7 @@ def url(url_rule, import_name, **options):
 
 def config():
     #TODO Add validators for parameters.
-    f = open('app/config.yaml', 'r')
+    os.chdir(os.path.dirname(__file__))
+    f = open('config.yaml', 'r')
     config = yaml.load(f)
     return config
