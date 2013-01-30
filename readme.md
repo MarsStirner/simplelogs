@@ -1,4 +1,4 @@
-Version: __0.1__
+Version: __0.1.1__
 
 About
 =====
@@ -6,7 +6,7 @@ Simplelogs is [RESTful] [rest] API logging system written in Python. It based on
 
 For start Simplelogs use:
 
-    python run.py
+    python app.py
 
 For test sending log message you can use, for example, [curl]:
 
