@@ -1,4 +1,4 @@
-Version: __0.1.1__
+Version: __0.1.2__
 
 About
 =====
@@ -69,6 +69,11 @@ API description
         <td>GET</td>
         <td>http://host/</td>
         <td>Get server status.</td>
+    </tr>
+    <tr>
+            <td>GET</td>
+            <td>http://host/api/level/</td>
+            <td>Get avaliable log entry levels.</td>
     </tr>
     <tr>
         <td>POST</td>

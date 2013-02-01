@@ -14,7 +14,11 @@ config = config()
 def index():
     return jsonify({'SimpleLogs API status': 'Available'})
 
-def new_entry():
+def get_levels_list():
+    levels_list = config['level']
+    return jsonify({'level': levels_list})
+
+def add_logentry():
     form = EntryForm(csrf_enabled=False)
     errors = []
 
