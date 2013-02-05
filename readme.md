@@ -1,4 +1,4 @@
-Version: __0.1.2__
+Version: __0.1.3__
 
 About
 =====
@@ -8,9 +8,7 @@ For start Simplelogs use:
 
     python app.py
 
-For test sending log message you can use, for example, [curl]:
-
-    curl -X POST -d 'data={"Entry info": "Some message"}&owner={"ip": "127.0.0.1", "user": "root"}&level=info&tags=["me", "java"]' http://127.0.0.1:5000/api/entry/
+For testing sending log message you can use [curl].
 
 Requirements
 ============
