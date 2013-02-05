@@ -32,8 +32,6 @@ def add_logentry():
         else:
             entry.level = level
 
-        entry.datetimestamp = form.datetimestamp.data
-
         try:
             owner =json.loads(form.owner.data)
         except ValueError:

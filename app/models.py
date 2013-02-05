@@ -4,6 +4,7 @@ from datetime import datetime
 from pymongo.errors import AutoReconnect
 
 from connectors import MongoDBConnection
+
 db = MongoDBConnection.connect()
 from helpers import config
 
@@ -27,9 +28,8 @@ class LogEntry:
     tags - tags list for extended search
 
     """
-    def __init__(self, level='info', datetimestamp=datetime.now(), owner='', data='', tags=[]):
+    def __init__(self, level='info', owner='', data='', tags=[]):
         self.level = level
-        self.datetimestamp = datetimestamp
         self.owner = owner
         self.data = data
         self.tags = tags
@@ -38,7 +38,7 @@ class LogEntry:
         try:
             entry_id = db[collection].insert({
                 'level': self.level,
-                'datetimestamp': self.datetimestamp,
+                'datetimestamp': datetime.now(),
                 'owner': self.owner,
                 'data': self.data,
                 'tags': self.tags
