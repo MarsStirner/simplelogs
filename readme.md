@@ -85,6 +85,10 @@ API description
 Last changes:
 ============
 
+__0.1.3__:
+
+  * New method for creating entries. Now it understand only application/json content-type headers.
+
 __0.1.2__:
 
   * New call get avaliable log entry levels (GET http://host/api/level/).
