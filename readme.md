@@ -1,4 +1,4 @@
-Version: __0.1.1__
+Version: __0.1.2__
 
 About
 =====
@@ -71,11 +71,23 @@ API description
         <td>Get server status.</td>
     </tr>
     <tr>
+            <td>GET</td>
+            <td>http://host/api/level/</td>
+            <td>Get avaliable log entry levels.</td>
+    </tr>
+    <tr>
         <td>POST</td>
         <td>http://host/api/entry/</td>
-        <td>create new log entry.</td>
+        <td>Create new log entry.</td>
     </tr>
 </table>
+
+Last changes:
+============
+
+__0.1.2__:
+
+  * New call get avaliable log entry levels (GET http://host/api/level/).
 
 
 Using config file and connector to Mongo
