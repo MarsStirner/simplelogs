@@ -7,10 +7,16 @@ from flask import jsonify, request
 from helpers import config
 from models import LogEntry
 
+VERSION = "0.1.3"
+
 config = config()
 
 def index():
-    return jsonify({'SimpleLogs API status': 'Available'})
+    response = {'name': "simplelogs",
+                'type': "API",
+                'status': "available",
+                'version': VERSION}
+    return jsonify(response)
 
 def get_levels_list():
     levels_list = config['level']
