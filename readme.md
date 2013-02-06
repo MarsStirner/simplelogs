@@ -36,12 +36,12 @@ Mongo section describes base information about connection:
 
 _Level_ section describes logenty levels. By default it includes:
 
-  * Critical – for errors that lead to termination
-  * Error – for errors that occur, but are handled
-  * Warning – for exceptional circumstances that might not be errors
-  * Notice – for non-error messages you usually want to see
-  * Info – for messages you usually don’t want to see
-  * Debug – for debug messages
+  * _Critical_ – for errors that lead to termination
+  * _Error_ – for errors that occur, but are handled
+  * _Warning_ – for exceptional circumstances that might not be errors
+  * _Notice_ – for non-error messages you usually want to see
+  * _Info_ – for messages you usually don’t want to see
+  * _Debug_ – for debug messages
   
 You can add, remove or modify any of level you want. You don't need to restart server after it. 
 
@@ -49,11 +49,11 @@ Log entry description
 =====================
 Log-entry is a collection of 3 required and 2 non-required entries:
 
-  * level (Required) - only text. Shoud be specified in app/config.yaml
-  * datetimestamp - current datetime stamp. You don't need to send it. Server will do it automaticly.
-  * owner (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
-  * data (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
-  * tags - list (array) only.
+  * _level_ (Required) - only text. Shoud be specified in app/config.yaml
+  * _datetimestamp_ - current datetime stamp. You don't need to send it. Server will do it automaticly.
+  * _owner_ (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
+  * _data_ (Required) - text or dict (hash-table, key-value storage). Dict can include arrays. (MAX 7 MB)
+  * _tags_ - list (array) only.
 
 API description
 ===============
@@ -65,7 +65,7 @@ API description
     </tr>
     <tr>
         <td>GET</td>
-        <td>http://host/</td>
+        <td>http://host/api/</td>
         <td>Get server status.</td>
     </tr>
     <tr>
