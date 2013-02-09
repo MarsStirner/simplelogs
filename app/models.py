@@ -35,6 +35,11 @@ class LogEntry:
         self.tags = tags
 
     def save(self):
+        '''Trying to save new log entry to Mongo.
+
+        Returns entry id (from mongo) if everything all right, otherwise returns Connection error message.
+
+        '''
         try:
             entry_id = db[collection].insert({
                 'level': self.level,
