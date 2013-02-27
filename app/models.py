@@ -11,6 +11,7 @@ from helpers import config
 config = config()
 collection = config['mongo']['collection']
 
+
 class LogEntry:
     """Main class for new log entries.
 
@@ -35,6 +36,11 @@ class LogEntry:
         self.tags = tags
 
     def save(self):
+        """Trying to save new log entry to Mongo.
+
+        Returns entry id (from mongo) if everything all right, otherwise returns Connection error message.
+
+        """
         try:
             entry_id = db[collection].insert({
                 'level': self.level,

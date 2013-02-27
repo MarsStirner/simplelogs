@@ -1,4 +1,4 @@
-Version: __0.1.3__
+Version: __0.1.4__
 
 About
 =====
@@ -83,6 +83,11 @@ API description
 Last changes:
 ============
 
+__0.1.4__:
+
+  * Full test coverage;
+  * Supporting username and password for remote connection to MongoDB-server. [Setting up authentication for MongoDB on Ubuntu with pymongo example.] [mongodb-remote-access]
+
 __0.1.3__:
 
   * New method for creating entries. Now it understand only application/json content-type headers.
@@ -97,6 +102,15 @@ Using config file and connector to Mongo
   * __helpers.config__ - wrapper for config file. It returns dict with full configurations.
   * __connectors.connect__ - static method. It returns  MongoDB db-object.
 
+Other
+=====
+For run unittests use:
+
+    python -m unittest tests
+
+in project-root directory.
+
+[mongodb-remote-access]: https://github.com/SkyFox/simplelogs/wiki/Setting-up-authentication-for-MongoDB-on-Ubuntu-with-pymongo-example
 [mongo]: http://www.mongodb.org/
 [flask]: http://flask.pocoo.org/
 [rest]: http://en.wikipedia.org/wiki/Representational_state_transfer

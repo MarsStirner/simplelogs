@@ -1,8 +1,8 @@
 mongo:
-  host: localhost
+  host: 10.10.10.133
   port: 27017
-  user: root
-  password: root
+  user: me
+  password: 123
   database: simplelogs
   collection: entries
 
