@@ -7,6 +7,7 @@ import yaml
 
 from app import app
 
+
 class LazyView(object):
     """Lazily Loading Views
 
@@ -28,6 +29,7 @@ class LazyView(object):
     def __call__(self, *args, **kwargs):
         return self.view(*args, **kwargs)
 
+
 def url(url_rule, import_name, **options):
     """Generating new urls for url_rule by func_name
 
@@ -42,6 +44,7 @@ def url(url_rule, import_name, **options):
     view = LazyView('app.' + import_name)
     app.add_url_rule(url_rule, view_func=view, **options)
 
+
 def config():
     """Loading configurations from config file
 
@@ -52,7 +55,6 @@ def config():
     How to do that, read manual: https://github.com/SkyFox/simplelogs/wiki/Deploying-simplelogs-with-nginx-and-uWSGI
 
     """
-    os.chdir(os.path.dirname(__file__))
-    f = open('config.yaml', 'r')
+    f = open(os.path.join(app.root_path, 'config.yaml'), 'r')
     config = yaml.load(f)
     return config

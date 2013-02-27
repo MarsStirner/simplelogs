@@ -11,17 +11,19 @@ VERSION = "0.1.3"
 
 config = config()
 
+
 def index():
-    '''Status page
+    """Status page
 
     Generating status (main) page and returns it.
 
-    '''
+    """
     response = {'name': "simplelogs",
                 'type': "API",
                 'status': "available",
                 'version': VERSION}
     return jsonify(response)
+
 
 def get_levels_list():
     """Levels list
@@ -31,6 +33,7 @@ def get_levels_list():
     """
     levels_list = config['level']
     return jsonify({'level': levels_list})
+
 
 def add_logentry():
     """Creating new log entry and saving it to DB.
