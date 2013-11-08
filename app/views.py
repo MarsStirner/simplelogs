@@ -2,10 +2,11 @@
 
 from bson import ObjectId
 
-from flask import jsonify, request
+from flask import request
 
-from helpers import config
+from helpers import config, jsonify
 from models import LogEntry
+from exceptions import InvalidAPIUsage
 
 VERSION = "0.2.0"
 
@@ -94,3 +95,53 @@ def add_logentry():
     else:
         #TODO Here should be NORMAL exception.
         return jsonify({"errors": ["415 Unsupported Media Type. \"application/json\" required.\n",]})
+
+
+def get_logentry_list():
+    """Logentries list
+
+    Returns Logentries list
+
+    """
+    if request.headers['Content-Type'] == 'application/json':
+        find = dict()
+
+        request_data = request.json
+        for key, value in request_data.iteritems():
+            if key in ('level', 'owner', 'datetimestamp', 'tags'):
+                find[key] = value
+        entry = LogEntry()
+        try:
+            result = entry.get_list(find)
+        except ValueError, e:
+            raise InvalidAPIUsage(e.message, status_code=404)
+        except AttributeError, e:
+            raise InvalidAPIUsage(e.message, status_code=400)
+        return jsonify(dict(OK=True, result=result))
+    else:
+        raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
+
+
+def count_logentries():
+    """Count logentries
+
+    Returns number of logentries
+
+    """
+    if request.headers['Content-Type'] == 'application/json':
+        find = dict()
+
+        request_data = request.json
+        for key, value in request_data.iteritems():
+            if key in ('level', 'owner', 'datetimestamp', 'tags'):
+                find[key] = value
+        entry = LogEntry()
+        try:
+            result = entry.count(find)
+        except ValueError, e:
+            raise InvalidAPIUsage(e.message, status_code=404)
+        except AttributeError, e:
+            raise InvalidAPIUsage(e.message, status_code=400)
+        return jsonify(dict(OK=True, result=result))
+    else:
+        raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)

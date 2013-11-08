@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import os
+import datetime
+from bson.objectid import ObjectId
+from flask import Response
 
 from werkzeug.utils import import_string, cached_property
 import yaml
 
 from app import app
+
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError
 
 
 class LazyView(object):
@@ -58,3 +69,22 @@ def config():
     f = open(os.path.join(app.root_path, 'config.yaml'), 'r')
     config = yaml.load(f)
     return config
+
+
+class MongoJsonEncoder(json.JSONEncoder):
+    """JSONEncoder for MongoDB ObjectId and datetime object conversion
+
+    It's impossible to serialize ObjectId and datetime object to json without such MongoJsonEncoder.
+    """
+    def default(self, obj):
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        elif isinstance(obj, ObjectId):
+            return obj.__str__()
+        return json.JSONEncoder.default(self, obj)
+
+
+def jsonify(*args, **kwargs):
+    """ jsonify with support for MongoDB ObjectId and datetime-to-string conversion
+    """
+    return Response(json.dumps(dict(*args, **kwargs), cls=MongoJsonEncoder), mimetype='application/json')
