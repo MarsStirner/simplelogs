@@ -7,7 +7,7 @@ from flask import jsonify, request
 from helpers import config
 from models import LogEntry
 
-VERSION = "0.1.4"
+VERSION = "0.2.0"
 
 config = config()
 
@@ -50,7 +50,7 @@ def add_logentry():
 
         # Lets check selected level
         level = ""
-        if not request_data.has_key("level"):
+        if "level" not in request_data:
             errors.append({'level': 'Field required.'})
         else:
             level = request_data['level']
@@ -61,14 +61,14 @@ def add_logentry():
 
         # Checking owner present (required)
         owner = ""
-        if not request_data.has_key("owner"):
+        if "owner" not in request_data:
             errors.append({'owner': 'Field required.'})
         else:
             owner = request_data['owner']
 
         # Checking data present (required)
         data = ""
-        if not request_data.has_key("data"):
+        if "data" not in request_data:
             errors.append({'data': 'Field required.'})
         else:
             data = request_data['data']
@@ -76,7 +76,7 @@ def add_logentry():
         tags = []
         # Tags isn't required. If it present lets try to convert it to python-list.
         # If successfully - add it to entry. If not - return full error and don't create entry in DB.
-        if request_data.has_key("tags"):
+        if "tags" in request_data:
             tags = request.json['tags']
             if not isinstance(tags, list):
                 errors.append({'tags': 'Tags must be an array.'})
