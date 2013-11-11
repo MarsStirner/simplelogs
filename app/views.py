@@ -107,17 +107,20 @@ def get_logentry_list():
         find = dict()
 
         request_data = request.json
-        for key, value in request_data.iteritems():
+        request_find = request_data.get('find', dict())
+        sort = request_data.get('sort')
+        limit = request_data.get('limit')
+        for key, value in request_find.iteritems():
             if key in ('level', 'owner', 'datetimestamp', 'tags'):
                 find[key] = value
         entry = LogEntry()
         try:
-            result = entry.get_list(find)
+            result = entry.get_entries(find, sort, limit)
         except ValueError, e:
             raise InvalidAPIUsage(e.message, status_code=404)
         except AttributeError, e:
             raise InvalidAPIUsage(e.message, status_code=400)
-        return jsonify(dict(OK=True, result=result))
+        return jsonify(dict(OK=True, result=list(result)))
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
 

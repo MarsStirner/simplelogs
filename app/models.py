@@ -54,7 +54,7 @@ class LogEntry:
         except AutoReconnect, e:
             return e.message
 
-    def get_list(self, find=None, sort=None, limit=100):
+    def get_entries(self, find=None, sort=None, limit=None):
         """Getting logentry data
 
         Args:
@@ -67,6 +67,8 @@ class LogEntry:
         """
         if sort is None:
             sort = [('datetimestamp', DESCENDING)]
+        if limit is None:
+            limit = 100
         if find is not None and isinstance(find, dict):
             try:
                 cursor = db[collection].find(find).sort(sort).limit(limit)
