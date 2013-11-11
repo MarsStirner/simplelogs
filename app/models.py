@@ -74,7 +74,10 @@ class LogEntry:
                 cursor = db[collection].find(find).sort(sort).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
-                return error
+                raise TypeError(error)
+            except AutoReconnect, e:
+                error = u'Потеряно подключение к БД ({0})'.format(e)
+                raise AutoReconnect(error)
         else:
             cursor = db[collection].find().sort(sort).limit(limit)
         return cursor
@@ -93,7 +96,24 @@ class LogEntry:
                 cursor = db[collection].find(find).count()
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
-                return error
+                raise TypeError(error)
+            except AutoReconnect, e:
+                error = u'Потеряно подключение к БД ({0})'.format(e)
+                raise AutoReconnect(error)
         else:
             cursor = db[collection].find().count()
         return cursor
+
+    def get_owners(self):
+        """Getting list of unique owners
+
+        Returns:
+            pymongo cursor
+        """
+        try:
+            cursor = db[collection].distinct('owner')
+        except AutoReconnect, e:
+            error = u'Потеряно подключение к БД ({0})'.format(e)
+            raise AutoReconnect(error)
+        else:
+            return cursor

@@ -128,6 +128,15 @@ class LogEntryModelTestCase(unittest.TestCase):
         result = logentry.count(dict(data='test count data1'))
         self.assertEqual(result, 0)
 
+    def test_get_owners(self):
+        """Test for app.models.LogEntry.get_entries"""
+        logentry = LogEntry('test level', 'test get_owners owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        self._drop.append(logentry_id)
+
+        result = logentry.get_owners()
+        self.assertIn('test get_owners owner', result)
+
 
 class GetLevelsListViewTestCase(unittest.TestCase):
     def test_get_levels_list(self):
@@ -227,3 +236,23 @@ class ListViewTestCase(unittest.TestCase):
             self.assertTrue(ok)
             data = result['result']
             self.assertEqual(data, 2)
+
+    def test_owners_api_page(self):
+        """Test for app.views.list"""
+        logentry = LogEntry('test level', 'test owners owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        logentry1 = LogEntry('test level1', 'test owners owner1', 'test data1', 'test tags1')
+        logentry1_id = logentry1.save()
+        self._drop.append(logentry_id)
+        self._drop.append(logentry1_id)
+
+        with app.test_client() as test_app:
+            response = test_app.get('/api/owners/', content_type='application/json')
+            self.assertEqual(response.status_code, 200)
+            result = json.loads(response.get_data())
+            ok = result.get('OK')
+            self.assertTrue(ok)
+            data = result['result']
+            self.assertGreaterEqual(len(data), 2)
+            self.assertIn('test owners owner', data)
+            self.assertIn('test owners owner1', data)

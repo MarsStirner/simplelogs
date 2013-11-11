@@ -7,6 +7,7 @@ from flask import request
 from helpers import config, jsonify
 from models import LogEntry
 from exceptions import InvalidAPIUsage
+from pymongo.errors import AutoReconnect
 
 VERSION = "0.2.0"
 
@@ -120,9 +121,29 @@ def get_logentry_list():
             raise InvalidAPIUsage(e.message, status_code=404)
         except AttributeError, e:
             raise InvalidAPIUsage(e.message, status_code=400)
+        except TypeError, e:
+            raise InvalidAPIUsage(e.message, status_code=400)
+        except AutoReconnect, e:
+            raise InvalidAPIUsage(e.message, status_code=500)
         return jsonify(dict(OK=True, result=list(result)))
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
+
+
+def get_owners():
+    """Get owners list
+
+    Returns owners list
+
+    """
+    entry = LogEntry()
+    try:
+        result = entry.get_owners()
+    except ValueError, e:
+        raise InvalidAPIUsage(e.message, status_code=404)
+    except AutoReconnect, e:
+        raise InvalidAPIUsage(e.message, status_code=500)
+    return jsonify(dict(OK=True, result=result))
 
 
 def count_logentries():
@@ -145,6 +166,10 @@ def count_logentries():
             raise InvalidAPIUsage(e.message, status_code=404)
         except AttributeError, e:
             raise InvalidAPIUsage(e.message, status_code=400)
+        except TypeError, e:
+            raise InvalidAPIUsage(e.message, status_code=400)
+        except AutoReconnect, e:
+            raise InvalidAPIUsage(e.message, status_code=500)
         return jsonify(dict(OK=True, result=result))
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
