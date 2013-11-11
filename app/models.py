@@ -71,6 +71,9 @@ class LogEntry:
             limit = 100
         if find is not None and isinstance(find, dict):
             try:
+                if 'owner' in find and isinstance(find['owner'], basestring):
+                    owner = find.pop('owner')
+                    find['$or'] = [{'owner': owner}, {'owner.name': owner}]
                 cursor = db[collection].find(find).sort(sort).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
@@ -93,6 +96,9 @@ class LogEntry:
         """
         if find is not None and isinstance(find, dict):
             try:
+                if 'owner' in find and isinstance(find['owner'], basestring):
+                    owner = find.pop('owner')
+                    find['$or'] = [{'owner': owner}, {'owner.name': owner}]
                 cursor = db[collection].find(find).count()
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
