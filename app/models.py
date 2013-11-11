@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from pymongo.errors import AutoReconnect
+from pymongo import DESCENDING
 
 from connectors import MongoDBConnection
 
@@ -52,3 +53,67 @@ class LogEntry:
             return entry_id
         except AutoReconnect, e:
             return e.message
+
+    def get_entries(self, find=None, sort=None, limit=None):
+        """Getting logentry data
+
+        Args:
+            find: dict, pymongo-find clause for filtering documents
+            sort: single key or a list of (key, direction) pairs specifying the keys to sort on
+            limit: int, the number of results to be returned
+
+        Returns:
+            pymongo cursor
+        """
+        if sort is None:
+            sort = [('datetimestamp', DESCENDING)]
+        if limit is None:
+            limit = 100
+        if find is not None and isinstance(find, dict):
+            try:
+                cursor = db[collection].find(find).sort(sort).limit(limit)
+            except TypeError, e:
+                error = u'Неверный тип параметров ({0})'.format(e)
+                raise TypeError(error)
+            except AutoReconnect, e:
+                error = u'Потеряно подключение к БД ({0})'.format(e)
+                raise AutoReconnect(error)
+        else:
+            cursor = db[collection].find().sort(sort).limit(limit)
+        return cursor
+
+    def count(self, find=None):
+        """Count logentry
+
+        Args:
+            find: dict, pymongo-find clause for filtering documents
+
+        Returns:
+            the number of documents in the results set for this clause
+        """
+        if find is not None and isinstance(find, dict):
+            try:
+                cursor = db[collection].find(find).count()
+            except TypeError, e:
+                error = u'Неверный тип параметров ({0})'.format(e)
+                raise TypeError(error)
+            except AutoReconnect, e:
+                error = u'Потеряно подключение к БД ({0})'.format(e)
+                raise AutoReconnect(error)
+        else:
+            cursor = db[collection].find().count()
+        return cursor
+
+    def get_owners(self):
+        """Getting list of unique owners
+
+        Returns:
+            pymongo cursor
+        """
+        try:
+            cursor = db[collection].distinct('owner')
+        except AutoReconnect, e:
+            error = u'Потеряно подключение к БД ({0})'.format(e)
+            raise AutoReconnect(error)
+        else:
+            return cursor

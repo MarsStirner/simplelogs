@@ -61,6 +61,15 @@ class ConnectionTestCase(unittest.TestCase):
 
 class LogEntryModelTestCase(unittest.TestCase):
     """Tests for app.models.LogEntry"""
+    _drop = list()
+
+    def tearDown(self):
+        configs = config()
+        db = MongoDBConnection.connect(configs)
+        collection = unicode(configs['mongo']['collection'])
+        for logentry_id in self._drop:
+            db[collection].remove({'_id': ObjectId(logentry_id)})
+
     def test_create_instance(self):
         """Test for app.models.LogEntry.__init__"""
         level = 'test level'
@@ -88,6 +97,45 @@ class LogEntryModelTestCase(unittest.TestCase):
                         logentry_from_db['data'] == 'test data' and
                         logentry_from_db['tags'] == 'test tags',
                         msg="New entry does not match the expected or does not exist.")
+
+    def test_get_from_db(self):
+        """Test for app.models.LogEntry.get_entries"""
+        logentry = LogEntry('test level', 'test get_entries owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        self._drop.append(logentry_id)
+
+        cursor = logentry.get_entries(dict(owner='test get_entries owner'))
+        result = list(cursor)
+        logentry_from_db = result[0]
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['_id'], logentry_id)
+        self.assertTrue(logentry_from_db['level'] == 'test level' and
+                        logentry_from_db['owner'] == 'test get_entries owner' and
+                        logentry_from_db['data'] == 'test data' and
+                        logentry_from_db['tags'] == 'test tags',
+                        msg="New entry does not match the expected or does not exist.")
+
+    def test_count_from_db(self):
+        """Test for app.models.LogEntry.count"""
+        logentry = LogEntry('test level', 'test owner', 'test count data', 'test tags')
+        logentry_id = logentry.save()
+        self._drop.append(logentry_id)
+
+        result = logentry.count(dict(data='test count data'))
+        self.assertEqual(result, 1)
+
+        result = logentry.count(dict(data='test count data1'))
+        self.assertEqual(result, 0)
+
+    def test_get_owners(self):
+        """Test for app.models.LogEntry.get_entries"""
+        logentry = LogEntry('test level', 'test get_owners owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        self._drop.append(logentry_id)
+
+        result = logentry.get_owners()
+        self.assertIn('test get_owners owner', result)
 
 
 class GetLevelsListViewTestCase(unittest.TestCase):
@@ -138,5 +186,73 @@ class AddLogEntryViewTestCase(unittest.TestCase):
                             msg="Server response is not the same as entry in DB.")
 
 
+class ListViewTestCase(unittest.TestCase):
+    _drop = list()
 
+    def tearDown(self):
+        configs = config()
+        db = MongoDBConnection.connect(configs)
+        collection = unicode(configs['mongo']['collection'])
+        for logentry_id in self._drop:
+            db[collection].remove({'_id': ObjectId(logentry_id)})
 
+    def test_list_api_page(self):
+        """Test for app.views.list"""
+        logentry = LogEntry('test level', 'test list owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        logentry1 = LogEntry('test level1', 'test list owner', 'test data1', 'test tags1')
+        logentry1_id = logentry1.save()
+        self._drop.append(logentry_id)
+        self._drop.append(logentry1_id)
+
+        with app.test_client() as test_app:
+            find = dict(owner='test list owner')
+            response = test_app.post('/api/list/', content_type='application/json', data=json.dumps(dict(find=find)))
+            self.assertEqual(response.status_code, 200)
+            result = json.loads(response.get_data())
+            ok = result.get('OK')
+            self.assertTrue(ok)
+            data = result['result']
+            self.assertEqual(len(data), 2)
+            # By default sorting by timestamp DESCENDING
+            self.assertEqual(data[0]['data'], 'test data1')
+            self.assertEqual(data[1]['data'], 'test data')
+
+    def test_count_api_page(self):
+        """Test for app.views.list"""
+        logentry = LogEntry('test level', 'test count owner', 'test data', ['tag1', 'tag2'])
+        logentry_id = logentry.save()
+        logentry1 = LogEntry('test level1', 'test count owner', 'test data1', ['tag1', 'tag2'])
+        logentry1_id = logentry1.save()
+        self._drop.append(logentry_id)
+        self._drop.append(logentry1_id)
+
+        with app.test_client() as test_app:
+            find = dict(owner='test count owner')
+            response = test_app.post('/api/count/', content_type='application/json', data=json.dumps(dict(find=find)))
+            self.assertEqual(response.status_code, 200)
+            result = json.loads(response.get_data())
+            ok = result.get('OK')
+            self.assertTrue(ok)
+            data = result['result']
+            self.assertEqual(data, 2)
+
+    def test_owners_api_page(self):
+        """Test for app.views.list"""
+        logentry = LogEntry('test level', 'test owners owner', 'test data', 'test tags')
+        logentry_id = logentry.save()
+        logentry1 = LogEntry('test level1', 'test owners owner1', 'test data1', 'test tags1')
+        logentry1_id = logentry1.save()
+        self._drop.append(logentry_id)
+        self._drop.append(logentry1_id)
+
+        with app.test_client() as test_app:
+            response = test_app.get('/api/owners/', content_type='application/json')
+            self.assertEqual(response.status_code, 200)
+            result = json.loads(response.get_data())
+            ok = result.get('OK')
+            self.assertTrue(ok)
+            data = result['result']
+            self.assertGreaterEqual(len(data), 2)
+            self.assertIn('test owners owner', data)
+            self.assertIn('test owners owner1', data)
