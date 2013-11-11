@@ -9,7 +9,7 @@ from models import LogEntry
 from exceptions import InvalidAPIUsage
 from pymongo.errors import AutoReconnect
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 config = config()
 
@@ -156,7 +156,8 @@ def count_logentries():
         find = dict()
 
         request_data = request.json
-        for key, value in request_data.iteritems():
+        request_find = request_data.get('find', dict())
+        for key, value in request_find.iteritems():
             if key in ('level', 'owner', 'datetimestamp', 'tags'):
                 find[key] = value
         entry = LogEntry()
