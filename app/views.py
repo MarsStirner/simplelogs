@@ -104,30 +104,31 @@ def get_logentry_list():
     Returns Logentries list
 
     """
-    if request.headers['Content-Type'] == 'application/json':
-        find = dict()
-
+    if request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
         request_data = request.json
         request_find = request_data.get('find', dict())
         sort = request_data.get('sort')
         limit = request_data.get('limit')
+        find = dict()
         for key, value in request_find.iteritems():
-            if key in ('level', 'owner', 'datetimestamp', 'tags'):
+            if key in ('level', 'owner', 'datetimestamp', 'tags', 'start', 'end'):
                 find[key] = value
-        entry = LogEntry()
-        try:
-            result = entry.get_entries(find, sort, limit)
-        except ValueError, e:
-            raise InvalidAPIUsage(e.message, status_code=404)
-        except AttributeError, e:
-            raise InvalidAPIUsage(e.message, status_code=400)
-        except TypeError, e:
-            raise InvalidAPIUsage(e.message, status_code=400)
-        except AutoReconnect, e:
-            raise InvalidAPIUsage(e.message, status_code=500)
-        return jsonify(dict(OK=True, result=list(result)))
+    elif request.method == 'GET':
+        find, sort, limit = None, None, None
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
+    entry = LogEntry()
+    try:
+        result = entry.get_entries(find, sort, limit)
+    except ValueError, e:
+        raise InvalidAPIUsage(e.message, status_code=404)
+    except AttributeError, e:
+        raise InvalidAPIUsage(e.message, status_code=400)
+    except TypeError, e:
+        raise InvalidAPIUsage(e.message, status_code=400)
+    except AutoReconnect, e:
+        raise InvalidAPIUsage(e.message, status_code=500)
+    return jsonify(dict(OK=True, result=list(result)))
 
 
 def get_owners():
@@ -152,25 +153,26 @@ def count_logentries():
     Returns number of logentries
 
     """
-    if request.headers['Content-Type'] == 'application/json':
+    if request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
         find = dict()
-
         request_data = request.json
         request_find = request_data.get('find', dict())
         for key, value in request_find.iteritems():
-            if key in ('level', 'owner', 'datetimestamp', 'tags'):
+            if key in ('level', 'owner', 'datetimestamp', 'tags', 'start', 'end'):
                 find[key] = value
-        entry = LogEntry()
-        try:
-            result = entry.count(find)
-        except ValueError, e:
-            raise InvalidAPIUsage(e.message, status_code=404)
-        except AttributeError, e:
-            raise InvalidAPIUsage(e.message, status_code=400)
-        except TypeError, e:
-            raise InvalidAPIUsage(e.message, status_code=400)
-        except AutoReconnect, e:
-            raise InvalidAPIUsage(e.message, status_code=500)
-        return jsonify(dict(OK=True, result=result))
+    elif request.method == 'GET':
+        find, sort, limit = None, None, None
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
+    entry = LogEntry()
+    try:
+        result = entry.count(find)
+    except ValueError, e:
+        raise InvalidAPIUsage(e.message, status_code=404)
+    except AttributeError, e:
+        raise InvalidAPIUsage(e.message, status_code=400)
+    except TypeError, e:
+        raise InvalidAPIUsage(e.message, status_code=400)
+    except AutoReconnect, e:
+        raise InvalidAPIUsage(e.message, status_code=500)
+    return jsonify(dict(OK=True, result=result))

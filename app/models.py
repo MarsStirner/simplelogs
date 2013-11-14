@@ -54,6 +54,25 @@ class LogEntry:
         except AutoReconnect, e:
             return e.message
 
+    def __prepare_find(self, find):
+        start, end = None, None
+        if 'owner' in find and isinstance(find['owner'], basestring):
+            owner = find.pop('owner')
+            find['$or'] = [{'owner': owner}, {'owner.name': owner}]
+        if 'start' in find:
+            start = find.pop('start')
+            start = datetime.strptime(start, '%Y-%m-%d')
+        if 'end' in find:
+            end = find.pop('end')
+            end = datetime.strptime(end, '%Y-%m-%d')
+        if start and end:
+            find['datetimestamp'] = {'$gte': start, '$lte': end}
+        elif start:
+            find['datetimestamp'] = {'$gte': start}
+        elif end:
+            find['datetimestamp'] = {'$lte': end}
+        return find
+
     def get_entries(self, find=None, sort=None, limit=None):
         """Getting logentry data
 
@@ -70,10 +89,8 @@ class LogEntry:
         if limit is None:
             limit = 100
         if find is not None and isinstance(find, dict):
+            find = self.__prepare_find(find)
             try:
-                if 'owner' in find and isinstance(find['owner'], basestring):
-                    owner = find.pop('owner')
-                    find['$or'] = [{'owner': owner}, {'owner.name': owner}]
                 cursor = db[collection].find(find).sort(sort).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
@@ -95,10 +112,8 @@ class LogEntry:
             the number of documents in the results set for this clause
         """
         if find is not None and isinstance(find, dict):
+            find = self.__prepare_find(find)
             try:
-                if 'owner' in find and isinstance(find['owner'], basestring):
-                    owner = find.pop('owner')
-                    find['$or'] = [{'owner': owner}, {'owner.name': owner}]
                 cursor = db[collection].find(find).count()
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
