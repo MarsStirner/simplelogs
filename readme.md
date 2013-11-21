@@ -1,4 +1,4 @@
-Version: __0.1.4__
+Version: __0.2.1__
 
 About
 =====
@@ -82,6 +82,16 @@ API description
 
 Last changes:
 ============
+
+__0.2.1__:
+
+  * Modernizations getting data methods;
+  * Supporting more various search parameters.
+
+__0.2.0__:
+
+  * New methods for getting data;
+  * Some refactoring.
 
 __0.1.4__:
 
