@@ -73,7 +73,7 @@ class LogEntry:
             find['datetimestamp'] = {'$lte': end}
         return find
 
-    def get_entries(self, find=None, sort=None, limit=None):
+    def get_entries(self, find=None, sort=None, skip=None, limit=None):
         """Getting logentry data
 
         Args:
@@ -88,10 +88,12 @@ class LogEntry:
             sort = [('datetimestamp', DESCENDING)]
         if limit is None:
             limit = 100
+        if skip is None:
+            skip = 0
         if find is not None and isinstance(find, dict):
             find = self.__prepare_find(find)
             try:
-                cursor = db[collection].find(find).sort(sort).limit(limit)
+                cursor = db[collection].find(find).sort(sort).skip(skip).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
                 raise TypeError(error)
@@ -99,7 +101,7 @@ class LogEntry:
                 error = u'Потеряно подключение к БД ({0})'.format(e)
                 raise AutoReconnect(error)
         else:
-            cursor = db[collection].find().sort(sort).limit(limit)
+            cursor = db[collection].find().sort(sort).skip(skip).limit(limit)
         return cursor
 
     def count(self, find=None):
