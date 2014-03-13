@@ -85,7 +85,8 @@ Last changes:
 
 __0.2.2__:
 
-  * Supporting datetime search parameter instead of date type.
+  * Supporting datetime search parameter instead of date type,
+  * Added 'skip' parameter for possibility of pagination realization.
 
 __0.2.1__:
 
