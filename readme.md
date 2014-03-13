@@ -1,4 +1,4 @@
-Version: __0.2.1__
+Version: __0.2.2__
 
 About
 =====
@@ -82,6 +82,10 @@ API description
 
 Last changes:
 ============
+
+__0.2.2__:
+
+  * Supporting datetime search parameter instead of date type.
 
 __0.2.1__:
 

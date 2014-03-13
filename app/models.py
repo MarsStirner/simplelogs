@@ -61,10 +61,10 @@ class LogEntry:
             find['$or'] = [{'owner': owner}, {'owner.name': owner}]
         if 'start' in find:
             start = find.pop('start')
-            start = datetime.strptime(start, '%Y-%m-%d')
+            start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         if 'end' in find:
             end = find.pop('end')
-            end = datetime.strptime(end, '%Y-%m-%d')
+            end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         if start and end:
             find['datetimestamp'] = {'$gte': start, '$lte': end}
         elif start:
