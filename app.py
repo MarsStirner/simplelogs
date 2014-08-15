@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 __author__ = "Dmitry Timofeev"
-__version__ = "0.2.1"
+__version__ = "0.2.3"
 __email__ = "dimkat@gmail.com"
 
 """

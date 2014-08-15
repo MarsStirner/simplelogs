@@ -133,10 +133,15 @@ class LogEntry:
         Returns:
             pymongo cursor
         """
+        # TODO: optimize get_owners! MayBe store them in different collection?
         try:
-            cursor = db[collection].distinct('owner')
+            cursor = db[collection].distinct('owner')  #TODO: привести к виду owner.name (но тогда из Цезаря приходит пустой json при фильтрации по подсистеме)
         except AutoReconnect, e:
             error = u'Потеряно подключение к БД ({0})'.format(e)
             raise AutoReconnect(error)
         else:
             return cursor
+
+    @staticmethod
+    def ensure_index(field):
+        db[collection].ensure_index(field)

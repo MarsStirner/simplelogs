@@ -1,4 +1,4 @@
-Version: __0.2.2__
+Version: __0.2.3__
 
 About
 =====
@@ -82,6 +82,10 @@ API description
 
 Last changes:
 ============
+
+__0.2.3__:
+
+  * Added index creation on field 'owner' before application start.
 
 __0.2.2__:
 
