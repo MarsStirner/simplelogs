@@ -109,17 +109,18 @@ def get_logentry_list():
         request_find = request_data.get('find', dict())
         sort = request_data.get('sort')
         limit = request_data.get('limit')
+        skip = request_data.get('skip')
         find = dict()
         for key, value in request_find.iteritems():
             if key in ('level', 'owner', 'datetimestamp', 'tags', 'start', 'end'):
                 find[key] = value
     elif request.method == 'GET':
-        find, sort, limit = None, None, None
+        find, sort, limit, skip = None, None, None, None
     else:
         raise InvalidAPIUsage('Unsupported Media Type. \"application/json\" required.\n', 415)
     entry = LogEntry()
     try:
-        result = entry.get_entries(find, sort, limit)
+        result = entry.get_entries(find=find, sort=sort, skip=skip, limit=limit)
     except ValueError, e:
         raise InvalidAPIUsage(e.message, status_code=404)
     except AttributeError, e:

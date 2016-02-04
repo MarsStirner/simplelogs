@@ -61,10 +61,10 @@ class LogEntry:
             find['$or'] = [{'owner': owner}, {'owner.name': owner}]
         if 'start' in find:
             start = find.pop('start')
-            start = datetime.strptime(start, '%Y-%m-%d')
+            start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
         if 'end' in find:
             end = find.pop('end')
-            end = datetime.strptime(end, '%Y-%m-%d')
+            end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         if start and end:
             find['datetimestamp'] = {'$gte': start, '$lte': end}
         elif start:
@@ -73,7 +73,7 @@ class LogEntry:
             find['datetimestamp'] = {'$lte': end}
         return find
 
-    def get_entries(self, find=None, sort=None, limit=None):
+    def get_entries(self, find=None, sort=None, skip=None, limit=None):
         """Getting logentry data
 
         Args:
@@ -88,10 +88,12 @@ class LogEntry:
             sort = [('datetimestamp', DESCENDING)]
         if limit is None:
             limit = 100
+        if skip is None:
+            skip = 0
         if find is not None and isinstance(find, dict):
             find = self.__prepare_find(find)
             try:
-                cursor = db[collection].find(find).sort(sort).limit(limit)
+                cursor = db[collection].find(find).sort(sort).skip(skip).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
                 raise TypeError(error)
@@ -99,7 +101,7 @@ class LogEntry:
                 error = u'Потеряно подключение к БД ({0})'.format(e)
                 raise AutoReconnect(error)
         else:
-            cursor = db[collection].find().sort(sort).limit(limit)
+            cursor = db[collection].find().sort(sort).skip(skip).limit(limit)
         return cursor
 
     def count(self, find=None):
@@ -131,10 +133,15 @@ class LogEntry:
         Returns:
             pymongo cursor
         """
+        # TODO: optimize get_owners! MayBe store them in different collection?
         try:
-            cursor = db[collection].distinct('owner')
+            cursor = db[collection].distinct('owner')  #TODO: привести к виду owner.name (но тогда из Цезаря приходит пустой json при фильтрации по подсистеме)
         except AutoReconnect, e:
             error = u'Потеряно подключение к БД ({0})'.format(e)
             raise AutoReconnect(error)
         else:
             return cursor
+
+    @staticmethod
+    def ensure_index(field):
+        db[collection].ensure_index(field)
