@@ -4,14 +4,13 @@ from bson import ObjectId
 
 from flask import request
 
-from helpers import config, jsonify
-from models import LogEntry
-from exceptions import InvalidAPIUsage
+from simplelogs.systemwide import app
+from simplelogs.app.helpers import jsonify
+from simplelogs.app.models import LogEntry
+from simplelogs.app.exceptions import InvalidAPIUsage
 from pymongo.errors import AutoReconnect
 
 VERSION = "0.2.1"
-
-config = config()
 
 
 def index():
@@ -33,7 +32,7 @@ def get_levels_list():
     Returns level list from config file as a json-list.
 
     """
-    levels_list = config['level']
+    levels_list = app.config['SIMPLELOGS_LEVELS']
     return jsonify({'level': levels_list})
 
 
@@ -58,7 +57,7 @@ def add_logentry():
             level = request_data['level']
 
         # Is level in level list in config file?
-        if level not in config['level']:
+        if level not in app.config['SIMPLELOGS_LEVELS']:
             errors.append({'level': 'Unknown level type.'})
 
         # Checking owner present (required)

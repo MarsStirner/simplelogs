@@ -4,13 +4,7 @@ from datetime import datetime
 from pymongo.errors import AutoReconnect
 from pymongo import DESCENDING
 
-from connectors import MongoDBConnection
-
-db = MongoDBConnection.connect()
-from helpers import config
-
-config = config()
-collection = config['mongo']['collection']
+from simplelogs.systemwide import app, mongo
 
 
 class LogEntry:
@@ -30,11 +24,11 @@ class LogEntry:
     tags - tags list for extended search
 
     """
-    def __init__(self, level='info', owner='', data='', tags=[]):
+    def __init__(self, level='info', owner='', data='', tags=None):
         self.level = level
         self.owner = owner
         self.data = data
-        self.tags = tags
+        self.tags = tags or []
 
     def save(self):
         """Trying to save new log entry to Mongo.
@@ -43,7 +37,7 @@ class LogEntry:
 
         """
         try:
-            entry_id = db[collection].insert({
+            entry_id = mongo.db[app.config['SIMPLELOGS_COLLECTION']].insert({
                 'level': self.level,
                 'datetimestamp': datetime.now(),
                 'owner': self.owner,
@@ -93,7 +87,7 @@ class LogEntry:
         if find is not None and isinstance(find, dict):
             find = self.__prepare_find(find)
             try:
-                cursor = db[collection].find(find).sort(sort).skip(skip).limit(limit)
+                cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].find(find).sort(sort).skip(skip).limit(limit)
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
                 raise TypeError(error)
@@ -101,7 +95,7 @@ class LogEntry:
                 error = u'Потеряно подключение к БД ({0})'.format(e)
                 raise AutoReconnect(error)
         else:
-            cursor = db[collection].find().sort(sort).skip(skip).limit(limit)
+            cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].find().sort(sort).skip(skip).limit(limit)
         return cursor
 
     def count(self, find=None):
@@ -116,7 +110,7 @@ class LogEntry:
         if find is not None and isinstance(find, dict):
             find = self.__prepare_find(find)
             try:
-                cursor = db[collection].find(find).count()
+                cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].find(find).count()
             except TypeError, e:
                 error = u'Неверный тип параметров ({0})'.format(e)
                 raise TypeError(error)
@@ -124,7 +118,7 @@ class LogEntry:
                 error = u'Потеряно подключение к БД ({0})'.format(e)
                 raise AutoReconnect(error)
         else:
-            cursor = db[collection].find().count()
+            cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].find().count()
         return cursor
 
     def get_owners(self):
@@ -135,7 +129,7 @@ class LogEntry:
         """
         # TODO: optimize get_owners! MayBe store them in different collection?
         try:
-            cursor = db[collection].distinct('owner')  #TODO: привести к виду owner.name (но тогда из Цезаря приходит пустой json при фильтрации по подсистеме)
+            cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].distinct('owner')  #TODO: привести к виду owner.name (но тогда из Цезаря приходит пустой json при фильтрации по подсистеме)
         except AutoReconnect, e:
             error = u'Потеряно подключение к БД ({0})'.format(e)
             raise AutoReconnect(error)
@@ -144,4 +138,4 @@ class LogEntry:
 
     @staticmethod
     def ensure_index(field):
-        db[collection].ensure_index(field)
+        mongo.db[app.config['SIMPLELOGS_COLLECTION']].ensure_index(field)

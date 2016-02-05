@@ -8,7 +8,7 @@ from flask import Response
 from werkzeug.utils import import_string, cached_property
 import yaml
 
-from app import app
+from simplelogs.systemwide import app
 
 try:
     import json

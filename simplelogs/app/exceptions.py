@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import make_response
-from helpers import app, jsonify
+from simplelogs.app.helpers import app, jsonify
 
 
 class InvalidAPIUsage(Exception):
