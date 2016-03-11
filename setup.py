@@ -17,11 +17,9 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-
-
 setup(
-    name='Hippocrates',
-    version='1.3dev2',
+    name='Simplelogs',
+    version='1.4',
     packages=find_packages(),
     url='',
     license='',
