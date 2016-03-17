@@ -12,4 +12,3 @@ class SimplelogsUsagiClient(TsukinoUsagiClient):
         app.config.update(configuration)
         mongo.init_app(app)
         from simplelogs.app import views
-        from simplelogs.app import urls
