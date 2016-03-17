@@ -27,7 +27,7 @@ def index():
     return jsonify(response)
 
 
-@app.route('/api/level/', 'views.get_levels_list', methods=["GET", ])
+@app.route('/api/level/', methods=["GET", ])
 def get_levels_list():
     """Levels list
 
@@ -38,7 +38,7 @@ def get_levels_list():
     return jsonify({'level': levels_list})
 
 
-@app.route('/api/entry/', 'views.add_logentry', methods=["POST", ])
+@app.route('/api/entry/', methods=["POST", ])
 def add_logentry():
     """Creating new log entry and saving it to DB.
 
@@ -100,7 +100,7 @@ def add_logentry():
         return jsonify({"errors": ["415 Unsupported Media Type. \"application/json\" required.\n",]})
 
 
-@app.route('/api/list/', 'views.get_logentry_list', methods=["GET", "POST"])
+@app.route('/api/list/', methods=["GET", "POST"])
 def get_logentry_list():
     """Logentries list
 
@@ -135,7 +135,7 @@ def get_logentry_list():
     return jsonify(dict(OK=True, result=list(result)))
 
 
-@app.route('/api/owners/', 'views.get_owners', methods=["GET", ])
+@app.route('/api/owners/', methods=["GET", ])
 def get_owners():
     """Get owners list
 
@@ -152,7 +152,7 @@ def get_owners():
     return jsonify(dict(OK=True, result=result))
 
 
-@app.route('/api/count/', 'views.count_logentries', methods=["GET", "POST"])
+@app.route('/api/count/', methods=["GET", "POST"])
 def count_logentries():
     """Count logentries
 
