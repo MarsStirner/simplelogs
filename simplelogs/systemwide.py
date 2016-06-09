@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import flask
-from flask.ext.pymongo import PyMongo
+from flask_pymongo import PyMongo
 
 __author__ = 'viruzzz-kun'
 
