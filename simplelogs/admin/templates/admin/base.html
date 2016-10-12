@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru" ng-app="Simplelogs">
+<head>
+    <title>{{ config['TITLE'] }} {% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link href="{{ url_for('.static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" media="screen, print" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='vendor/font-awesome/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('.static', filename='vendor/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('.static', filename='vendor/angular.js/angular.js') }}"></script>
+    <link href="{{ url_for('.static', filename='vendor/angular-ui-select-ext-css/select2.css') }}" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='vendor/angular-ui-select/select.css') }}" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='vendor/angular-ui-select-ext-css/select2-bootstrap.css') }}" rel="stylesheet">
+    {%- block modules_css %}{% endblock -%}
+</head>
+<body id="top">
+<div class="wrapper">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+{#            <ul class="nav navbar-nav" id="cur_modules">#}
+{#                <li>#}
+{#                </li>#}
+{#            </ul>#}
+            <ul class="nav navbar-nav pull-right">
+                <li>
+                    <span class="navbar-text nohmargin">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span> {{ current_user.format_name() }}</span>
+                    </span>
+                </li>
+                <li>
+                    <div class="btn-group">
+                        <a id="logout" class="btn btn-small btn-default navbar-btn" href="{{ url_for('logout') }}" title="Выйти">
+                            <span class="glyphicon glyphicon-log-out"></span></a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+    {%- block content %}
+    {% endblock -%}
+    </div>
+</div><!-- /#wrap -->
+
+{%- block modules_js %}
+<script src="{{ url_for('.static', filename='vendor/underscore.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/moment.min.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/moment.ru.js') }}"></script>
+
+<script src="{{ url_for('.static', filename='vendor/angular.js/angular-sanitize.min.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/angular.js/angular-locale_ru-ru.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/angular-ui-bootstrap/ui-bootstrap-tpls.js') }}"></script>
+<script src="{{ url_for('.static', filename='vendor/angular-ui-select/select.js') }}"></script>
+
+<script src="{{ url_for('.static', filename='js/hitsl.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/simplelogs.js') }}"></script>
+{% endblock -%}
+</body>
+</html>

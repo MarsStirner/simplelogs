@@ -2,18 +2,25 @@
 
 from bson import ObjectId
 
-from flask import request
+from flask import request, redirect, url_for
 
-from simplelogs.systemwide import app
+from simplelogs.systemwide import app, cas
 from simplelogs.app.helpers import jsonify
 from simplelogs.app.models import LogEntry
 from simplelogs.app.exceptions import InvalidAPIUsage
 from pymongo.errors import AutoReconnect
+from hitsl_utils.api import api_method
 
 VERSION = "0.2.1"
 
 
+@app.route('/')
+def html_index():
+    return redirect(url_for('admin.jounal_view'))
+
+
 @app.route('/api/', methods=['GET'])
+@cas.public
 def index():
     """Status page
 
@@ -28,6 +35,8 @@ def index():
 
 
 @app.route('/api/level/', methods=["GET", ])
+@cas.public
+@api_method
 def get_levels_list():
     """Levels list
 
@@ -35,10 +44,11 @@ def get_levels_list():
 
     """
     levels_list = app.config['SIMPLELOGS_LEVELS']
-    return jsonify({'level': levels_list})
+    return {'level': levels_list}
 
 
 @app.route('/api/entry/', methods=["POST", ])
+@cas.public
 def add_logentry():
     """Creating new log entry and saving it to DB.
 
@@ -136,6 +146,8 @@ def get_logentry_list():
 
 
 @app.route('/api/owners/', methods=["GET", ])
+@cas.public
+@api_method
 def get_owners():
     """Get owners list
 
@@ -149,7 +161,21 @@ def get_owners():
         raise InvalidAPIUsage(e.message, status_code=404)
     except AutoReconnect, e:
         raise InvalidAPIUsage(e.message, status_code=500)
-    return jsonify(dict(OK=True, result=result))
+    return result
+
+
+@app.route('/api/tags/', methods=["GET", ])
+@cas.public
+@api_method
+def get_tags():
+    entry = LogEntry()
+    try:
+        result = entry.get_tags()
+    except ValueError, e:
+        raise InvalidAPIUsage(e.message, status_code=404)
+    except AutoReconnect, e:
+        raise InvalidAPIUsage(e.message, status_code=500)
+    return result
 
 
 @app.route('/api/count/', methods=["GET", "POST"])

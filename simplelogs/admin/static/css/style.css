@@ -1,0 +1,19 @@
+body {
+    padding-top: 40px;
+}
+
+.simple-collapsed {
+    max-height: 60px;
+    overflow-y: hidden;
+}
+
+.abs-alert{
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1100;
+}
+
+.pagination.pagination-nomargin {
+    margin: 0;
+}

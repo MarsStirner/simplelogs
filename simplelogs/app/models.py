@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from copy import deepcopy
 from pymongo.errors import AutoReconnect
 from pymongo import DESCENDING
 
@@ -49,6 +50,7 @@ class LogEntry:
             return e.message
 
     def __prepare_find(self, find):
+        find = deepcopy(find)
         start, end = None, None
         if 'owner' in find and isinstance(find['owner'], basestring):
             owner = find.pop('owner')
@@ -65,6 +67,10 @@ class LogEntry:
             find['datetimestamp'] = {'$gte': start}
         elif end:
             find['datetimestamp'] = {'$lte': end}
+        if 'tags' in find:
+            find['tags'] = {'$in': find.pop('tags')}
+        if 'data' in find:
+            find['data'] = {'$regex': find.pop('data'), '$options': 'i'}
         return find
 
     def get_entries(self, find=None, sort=None, skip=None, limit=None):
@@ -130,6 +136,20 @@ class LogEntry:
         # TODO: optimize get_owners! MayBe store them in different collection?
         try:
             cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].distinct('owner')  #TODO: привести к виду owner.name (но тогда из Цезаря приходит пустой json при фильтрации по подсистеме)
+        except AutoReconnect, e:
+            error = u'Потеряно подключение к БД ({0})'.format(e)
+            raise AutoReconnect(error)
+        else:
+            return cursor
+
+    def get_tags(self):
+        """Getting list of unique tags
+
+        Returns:
+            pymongo cursor
+        """
+        try:
+            cursor = mongo.db[app.config['SIMPLELOGS_COLLECTION']].distinct('tags')
         except AutoReconnect, e:
             error = u'Потеряно подключение к БД ({0})'.format(e)
             raise AutoReconnect(error)

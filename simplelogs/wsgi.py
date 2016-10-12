@@ -11,4 +11,4 @@ usagi()
 if __name__ == '__main__':
     # LogEntry.ensure_index('owner')
     # LogEntry.ensure_index('owner.name')  #TODO: вкл. после приведения к owner.name
-    app.run(port=6603)
+    app.run(port=app.config.get('SERVER_PORT', 6604))

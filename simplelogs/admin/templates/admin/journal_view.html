@@ -1,0 +1,132 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div ng-controller="JournalListCtrl" class="ng-cloak">
+    <h3>Журнал логов</h3>
+    <alert-notify></alert-notify>
+    <div>
+        <div class="row">
+        <div class="col-md-3" ng-show="isFilterEnabled()">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Фильтр</h3>
+                </div>
+                <div class="panel-body">
+                    <label for="filter-text">Текст сообщения</label>
+                    <input class="form-control" id="filter-text" type="text" ng-model="flt.model.text"
+                        autocomplete="off">
+
+                    <label for="filter-date-from">Дата (от, до)</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <wm-date id="filter-date-from" ng-model="flt.model.date_from"></wm-date>
+                        </div>
+                        <div class="col-md-6">
+                            <wm-date id="filter-date-to" ng-model="flt.model.date_to"></wm-date>
+                        </div>
+                    </div>
+
+                    <label for="filter-system">Подсистема</label>
+                    <ui-select class="form-control" id="filter-system" ng-model="flt.model.owner_system" theme="select2">
+                        <ui-select-match allow-clear="true">[[$select.selected.name]], [[$select.selected.version]]</ui-select-match>
+                        <ui-select-choices repeat="item in owner_systems | filter: $select.search | orderBy:['name', '-version'] track by $index">
+                            <div style="text-align: justify">
+                                <span ng-bind="item.name | highlight: $select.search"></span>
+                                <span ng-show="item.version" class="text-muted"> [[item.version]]</span>
+                            </div>
+                        </ui-select-choices>
+                    </ui-select>
+
+                    <label for="filter-level">Уровень</label>
+                    <ui-select class="form-control" id="filter-level" ng-model="flt.model.level" theme="select2">
+                        <ui-select-match allow-clear="true">[[$select.selected]]</ui-select-match>
+                        <ui-select-choices repeat="item in log_levels | filter: $select.search track by $index">
+                            <div style="text-align: justify">
+                                <span ng-bind="item | highlight: $select.search"></span>
+                            </div>
+                        </ui-select-choices>
+                    </ui-select>
+
+                    <label for="filter-tags">Теги</label>
+                    <ui-select multiple="true" class="form-control" id="filter-tags" ng-model="flt.model.tags"
+                            theme="select2" close-on-select="false">
+                        <ui-select-match>[[$item]]</ui-select-match>
+                        <ui-select-choices repeat="item in tags | filter: $select.search">
+                            <div style="text-align: justify">
+                                <span ng-bind="item | highlight: $select.search"></span>
+                            </div>
+                        </ui-select-choices>
+                    </ui-select>
+
+                </div>
+                <div class="panel-footer">
+                    <button type="button" class="btn btn-default" ng-click="getData()">Получить данные</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" ng-click="clear()">Сбросить</button>
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ng-click="clearAll()">Сбросить и очистить результаты</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-[[ isFilterEnabled() ? 9 : 12 ]]">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                    <th width="15%">Подсистема</th>
+                    <th width="5%">Уровень</th>
+                    <th width="10%">Дата</th>
+                    <th width="50%">Сообщение</th>
+                    <th width="7%">Теги</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in item_list" ng-class="getRowClass(item)">
+                        <td>
+                            <b>version: </b>[[ item.owner.version ]]<br>
+                            <b>name: </b>[[ item.owner.name ]]
+                        </td>
+                        <td>[[ item.level ]]</td>
+                        <td>[[ item.datetimestamp | asDateTime ]]</td>
+                        <td simple-collapsable><div ng-bind="item.data"></div></td>
+                        <td>
+                            <span ng-repeat="tag in item.tags">[[ tag ]]<span ng-if="!$last">, </span></span>
+                        </td>
+                        <td class="nowrap" width="1%">
+                            <button type="button" class="btn btn-primary" ng-click="openView($index)" title="Открыть">
+                                <i class="fa fa-list-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tr>
+                    <td colspan="6" class="text-right">Всего записей: [[ pager.record_count ]]</td>
+                </tr>
+            </table>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="[[ isFilterEnabled() ? 'col-md-offset-3' : '' ]] col-md-1">
+            <button type="button" title="[[ isFilterEnabled() ? 'Скрыть' : 'Показать' ]] фильтр" ng-click="toggleFilter()"
+                class="btn btn-primary">
+                <i class="fa fa-filter"></i>
+            </button>
+        </div>
+        <div class="col-md-[[ isFilterEnabled() ? 8 : 11 ]]">
+            <pagination ng-model="pager.current_page" total-items="pager.pages" items-per-page="1"
+                max-size="pager.max_pages" ng-change="onPageChanged()" ng-show="pager.pages > 1" boundary-links="true"
+                class="pagination pagination-sm pagination-nomargin">
+            </pagination>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block modules_js %}
+    {{ super() }}
+{% endblock %}

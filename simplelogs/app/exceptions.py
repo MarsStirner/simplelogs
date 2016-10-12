@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import make_response
+from flask import make_response, request
 from simplelogs.app.helpers import app, jsonify
 
 
@@ -28,4 +28,7 @@ def handle_invalid_usage(error):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    if request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
+        return make_response(jsonify({'error': 'Not found'}), 404)
+    else:
+        return make_response('<html><body><h1>Not found</h2></body></html>', 404)
