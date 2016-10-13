@@ -29,7 +29,7 @@ setup(
     url='https://stash.bars-open.ru/scm/medvtr/simplelogs.git',
     author='hitsl',
     description='MIS logging system',
-    long_description=read('README.md'),
+    long_description=read('readme.md'),
     include_package_data=True,
     packages=find_packages(),
     package_data={
@@ -42,7 +42,7 @@ setup(
         'pyyaml',
         'simplejson',
 
-        'requests'
+        'requests',
         'Flask-SQLAlchemy',
         'pymysql',
         'Flask-Beaker',
