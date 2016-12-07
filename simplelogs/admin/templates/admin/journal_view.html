@@ -92,7 +92,7 @@
                             <b>name: </b>[[ item.owner.name ]]
                         </td>
                         <td>[[ item.level ]]</td>
-                        <td>[[ item.datetimestamp | asDateTime ]]</td>
+                        <td>[[ item.datetime | asDateTime ]]</td>
                         <td simple-collapsable><div ng-bind="item.data"></div></td>
                         <td>
                             <span ng-repeat="tag in item.tags">[[ tag ]]<span ng-if="!$last">, </span></span>

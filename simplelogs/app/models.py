@@ -40,7 +40,7 @@ class LogEntry:
         try:
             entry_id = mongo.db[app.config['SIMPLELOGS_COLLECTION']].insert({
                 'level': self.level,
-                'datetimestamp': datetime.now(),
+                'datetimestamp': datetime.utcnow(),
                 'owner': self.owner,
                 'data': self.data,
                 'tags': self.tags

@@ -10,7 +10,7 @@ from simplelogs.admin.auth import create_user_session, destroy_user_session
 from simplelogs.app.models import LogEntry
 
 from hitsl_utils.api import api_method
-from hitsl_utils.safe import safe_int, parse_json
+from hitsl_utils.safe import safe_int, parse_json, localize_datetime
 
 
 @module.before_request
@@ -60,6 +60,7 @@ def api_0_get_log_entries():
     result = []
     for res in entry.get_entries(find=find, sort=sort, skip=skip, limit=limit):
         res['_id'] = str(res['_id'])
+        res['datetime'] = localize_datetime(res['datetimestamp'], app.config.get('TIME_ZONE', 'Europe/Moscow'))
         result.append(res)
 
     total = entry.count(find)
