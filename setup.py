@@ -25,7 +25,7 @@ extra_files.extend(package_files('simplelogs/admin/templates'))
 
 setup(
     name='Simplelogs',
-    version='1.5',
+    version='1.5.1',
     url='https://stash.bars-open.ru/scm/medvtr/simplelogs.git',
     author='hitsl',
     description='MIS logging system',
