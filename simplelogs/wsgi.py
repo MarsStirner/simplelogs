@@ -9,6 +9,4 @@ app.wsgi_app = usagi.app
 usagi()
 
 if __name__ == '__main__':
-    # LogEntry.ensure_index('owner')
-    # LogEntry.ensure_index('owner.name')  #TODO: вкл. после приведения к owner.name
     app.run(port=app.config.get('SERVER_PORT', 6604))

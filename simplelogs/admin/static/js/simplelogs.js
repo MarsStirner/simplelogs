@@ -104,10 +104,10 @@ Simplelogs
             limit: $scope.pager.per_page,
             flt: angular.toJson({
                 data: $scope.flt.model.text || undefined,
-                start: $scope.flt.model.date_from !== undefined ?
+                start: $scope.flt.model.date_from ?
                     moment($scope.flt.model.date_from).startOf('day').format('YYYY-MM-DD HH:mm:ss') :
                     undefined,
-                end: $scope.flt.model.date_to !== undefined ?
+                end: $scope.flt.model.date_to ?
                     moment($scope.flt.model.date_to).endOf('day').format('YYYY-MM-DD HH:mm:ss') :
                     undefined,
                 owner: $scope.flt.model.owner_system || undefined,
@@ -237,7 +237,7 @@ Simplelogs
             return ApiCalls.wrapper('GET', '/api/level/');
         },
         get_tags: function () {
-            return ApiCalls.wrapper('GET', '/api/tags');
+            return ApiCalls.wrapper('GET', '/api/tags/');
         }
     };
 }]);

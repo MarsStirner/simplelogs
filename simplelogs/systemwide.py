@@ -4,6 +4,7 @@ from flask_pymongo import PyMongo
 from flask_beaker import BeakerSession
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_cache import Cache
 from hitsl_utils.cas import CasExtension
 
 
@@ -19,5 +20,7 @@ login_manager = LoginManager()
 beaker_session = BeakerSession()
 
 cas = CasExtension()
+
+cache = Cache()
 
 db = SQLAlchemy()

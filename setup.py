@@ -47,6 +47,7 @@ setup(
         'pymysql',
         'Flask-Beaker',
         'Flask-Login',
+        'Flask-Cache',
         'tsukino_usagi',
         'hitsl_utils',
     ],

@@ -3,7 +3,7 @@
 from datetime import datetime
 from copy import deepcopy
 from pymongo.errors import AutoReconnect
-from pymongo import DESCENDING
+from pymongo import DESCENDING, ASCENDING
 
 from simplelogs.systemwide import app, mongo
 
@@ -159,3 +159,13 @@ class LogEntry:
     @staticmethod
     def ensure_index(field):
         mongo.db[app.config['SIMPLELOGS_COLLECTION']].ensure_index(field)
+
+
+def ensure_indexes():
+    print 'Creating indexes if necessary...'
+    logs_collection = mongo.db[app.config['SIMPLELOGS_COLLECTION']]
+    logs_collection.create_index('datetimestamp')
+    logs_collection.create_index('tags')
+    logs_collection.create_index('start')
+    logs_collection.create_index('end')
+    logs_collection.create_index('owner')

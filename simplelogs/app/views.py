@@ -4,7 +4,7 @@ from bson import ObjectId
 
 from flask import request, redirect, url_for
 
-from simplelogs.systemwide import app, cas
+from simplelogs.systemwide import app, cas, cache
 from simplelogs.app.helpers import jsonify
 from simplelogs.app.models import LogEntry
 from simplelogs.app.exceptions import InvalidAPIUsage
@@ -148,6 +148,7 @@ def get_logentry_list():
 @app.route('/api/owners/', methods=["GET", ])
 @cas.public
 @api_method
+@cache.memoize(86400)
 def get_owners():
     """Get owners list
 
@@ -167,6 +168,7 @@ def get_owners():
 @app.route('/api/tags/', methods=["GET", ])
 @cas.public
 @api_method
+@cache.memoize(86400)
 def get_tags():
     entry = LogEntry()
     try:
