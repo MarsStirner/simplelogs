@@ -169,3 +169,4 @@ def ensure_indexes():
     logs_collection.create_index('start')
     logs_collection.create_index('end')
     logs_collection.create_index('owner')
+    logs_collection.create_index('level')
