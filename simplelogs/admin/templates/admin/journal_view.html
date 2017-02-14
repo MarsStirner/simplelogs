@@ -93,7 +93,7 @@
                         </td>
                         <td>[[ item.level ]]</td>
                         <td>[[ item.datetime | asDateTime ]]</td>
-                        <td simple-collapsable><div ng-bind="item.data"></div></td>
+                        <td simple-collapsable><pre style="white-space: normal" ng-bind="item.data"></pre></td>
                         <td>
                             <span ng-repeat="tag in item.tags">[[ tag ]]<span ng-if="!$last">, </span></span>
                         </td>
